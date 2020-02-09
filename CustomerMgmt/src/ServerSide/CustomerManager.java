@@ -32,7 +32,7 @@ public class CustomerManager implements JDBCCredentials {
     /**
      * Database name, Table name, and file name
      */
-    private String databaseName ="Customer_db", tableName ="Customer_info_table", dataFile = "customers.txt";
+    private String databaseName ="customer_db", tableName ="customer_info_table", dataFile = "customers.txt";
 
     /**
      * Constructor for the CustomerManager which establishes a connection to the database
@@ -40,9 +40,9 @@ public class CustomerManager implements JDBCCredentials {
     public CustomerManager () {
         try {
             Class.forName(JDBC_DRIVER);
-
             jdbc_connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
             System.out.println("Connected to: " + DB_URL + "\n");
+            dbSetup();
         }
         catch (SQLException e) { e.printStackTrace(); }
         catch (Exception e) { e.printStackTrace(); }
@@ -92,6 +92,7 @@ public class CustomerManager implements JDBCCredentials {
      */
     private void createDB () {
         try {
+            jdbc_connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
             statement = jdbc_connection.createStatement();
             statement.executeUpdate("CREATE DATABASE " + databaseName);
             System.out.println("Created Database " + databaseName);

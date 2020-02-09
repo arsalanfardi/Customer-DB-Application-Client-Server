@@ -24,7 +24,6 @@ public class Controller implements Runnable {
         this.socketIn = socketIn;
         this.socketOut = socketOut;
         this.cManager = new CustomerManager();
-        this.run();
     }
 
     @Override
