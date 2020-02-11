@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import Model.Customer;
 
 /**
  * Model class used for business logic and primarily
@@ -238,7 +239,7 @@ public class CustomerManager implements JDBCCredentials {
      * Accesses database and returns all Customers.
      * @return all Customers in database as array of Customer Objects
      */
-    public Customer[] searchCustomer () {
+    public ArrayList<Customer>searchCustomer () {
         ArrayList<Customer> searchedCustomers = new ArrayList<>();
         try {
             String sql = "SELECT * FROM " + tableName;
@@ -259,7 +260,8 @@ public class CustomerManager implements JDBCCredentials {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        // return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        return searchedCustomers;
     }
 
     /**
@@ -267,7 +269,7 @@ public class CustomerManager implements JDBCCredentials {
      * @param id Customer ID
      * @return array of Customer objects matching search criteria
      */
-    public Customer[] searchCustomer (int id) {
+    public ArrayList<Customer> searchCustomer (int id) {
         ArrayList<Customer> searchedCustomers = new ArrayList<>();
         try {
             String sql = "SELECT * FROM " + tableName + " WHERE ID=?";
@@ -289,7 +291,8 @@ public class CustomerManager implements JDBCCredentials {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        // return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        return searchedCustomers;
     }
 
     /**
@@ -297,7 +300,7 @@ public class CustomerManager implements JDBCCredentials {
      * @param lastName Customer's last name
      * @return array of Customer objects matching search criteria
      */
-    public Customer[] searchCustomer (String lastName) {
+    public ArrayList<Customer> searchCustomer (String lastName) {
         ArrayList<Customer> searchedCustomers = new ArrayList<>();
         try {
             String sql = "SELECT * FROM " + tableName + " WHERE LASTNAME=?";
@@ -319,7 +322,8 @@ public class CustomerManager implements JDBCCredentials {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        // return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        return searchedCustomers;
     }
 
     /**
@@ -327,7 +331,7 @@ public class CustomerManager implements JDBCCredentials {
      * @param CustomerType Customer's type (residential or commercial)
      * @return array of Customer objects matching search criteria
      */
-    public Customer[] searchCustomer (char CustomerType) {
+    public ArrayList<Customer> searchCustomer (char CustomerType) {
         ArrayList<Customer> searchedCustomers = new ArrayList<>();
         try {
             String sql = "SELECT * FROM " + tableName + " WHERE CustomerTYPE=?";
@@ -349,7 +353,8 @@ public class CustomerManager implements JDBCCredentials {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        // return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        return searchedCustomers;
     }
 
     /**

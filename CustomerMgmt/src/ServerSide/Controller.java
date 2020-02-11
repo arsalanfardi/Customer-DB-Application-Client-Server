@@ -6,9 +6,14 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import Model.MessengerPigeon;
+import Model.Customer;
 
 /**
  * Controller class used to link the View (GUI class) to the Model
@@ -16,11 +21,16 @@ import java.util.regex.Pattern;
  */
 public class Controller implements Runnable {
 
-    BufferedReader socketIn;
-    PrintWriter socketOut;
-    CustomerManager cManager;
+    private BufferedReader socketIn;
+    private PrintWriter socketOut;
+    private ObjectInputStream objectIn;
+    private ObjectOutputStream objectOut;
+    private CustomerManager cManager;
 
-    public Controller(BufferedReader socketIn, PrintWriter socketOut) {
+    public Controller(BufferedReader socketIn, PrintWriter socketOut, 
+    ObjectInputStream objectIn, ObjectOutputStream objectOut){
+        this.objectOut = objectOut;
+        this.objectIn = objectIn;
         this.socketIn = socketIn;
         this.socketOut = socketOut;
         this.cManager = new CustomerManager();
@@ -29,15 +39,46 @@ public class Controller implements Runnable {
     @Override
     public void run() {
         // cManager.dbSetup();
-        String clientResponse = "";
+        MessengerPigeon clientResponse = null;
         while (true) {
             System.out.println("Server Controller listening...");
             try {
-                clientResponse = socketIn.readLine();
+                clientResponse = (MessengerPigeon) objectIn.readObject();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (ClassNotFoundException e){
+                e.printStackTrace();
             }
-            socketOut.println(clientResponse);
+            switchBoard(clientResponse);
+        }
+    }
+
+    private void switchBoard(MessengerPigeon clientResponse) {
+        MessengerPigeon pidgey = new MessengerPigeon(null, null);
+        switch(clientResponse.getInstruction()){
+            case "1":
+                pidgey.setCustomer(callSearch(clientResponse));
+                break;
+        }
+        try {
+            objectOut.writeObject(pidgey);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ArrayList<Customer> callSearch(MessengerPigeon clientResponse) {
+        switch(clientResponse.getSearchType()){
+            case "ID":
+                return cManager.searchCustomer(Integer.valueOf(clientResponse.getSearchParameter()));
+            case "lName":
+                return cManager.searchCustomer(clientResponse.getSearchParameter());
+            case "cType":
+                return cManager.searchCustomer(clientResponse.getSearchParameter().charAt(0));
+            case "all":
+                return cManager.searchCustomer();
+            default:
+                return null;
         }
     }
 

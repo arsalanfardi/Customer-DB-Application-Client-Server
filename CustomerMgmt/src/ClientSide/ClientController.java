@@ -4,8 +4,11 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import Model.MessengerPigeon;
+import Model.Customer;
 
 public class ClientController{
 
@@ -88,34 +91,31 @@ public class ClientController{
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                Customer[] searchResult;
+                MessengerPigeon pidgey = new MessengerPigeon(null, "1");
                 String searchParameter = view.getSearchParameter().getText();
                 if (view.getCustomerIDRadio().isSelected()) {
-                    //TODO: change everywhere it says model to send to server
-                    client.out("search - by ID");
-                    client.in();
-                    //searchResult = model.searchCustomer(Integer.parseInt(searchParameter));
+                    Integer.parseInt(searchParameter);
+                    pidgey.setSearchFields("ID", searchParameter);
                 } else if (view.getCustomerLNameRadio().isSelected()) {
-                    //TODO: change everywhere it says model to send to server
-                    client.out("search - by last name");
-                    client.in();
-                    //searchResult = model.searchCustomer(searchParameter);
+                    pidgey.setSearchFields("lName", searchParameter);
                 } else if (view.getCustomerTypeRadio().isSelected()) {
-                    //TODO: change everywhere it says model to send to server
-                    client.out("search - by customer type");
-                    client.in();
-                    //searchResult = model.searchCustomer(searchParameter.charAt(0));
+                    if (searchParameter.length() > 1) { 
+                        JOptionPane.showMessageDialog(null, "Customer type must be 1 character!"); 
+                        return; 
+                    }
+                    pidgey.setSearchFields("cType", searchParameter);
                 } else {
-                    //TODO: change everywhere it says model to send to server
-                    client.out("search");
-                    client.in();
-                    //searchResult = model.searchCustomer();
+                    pidgey.setSearchFields("all", searchParameter);
                 }
-                //TODO: need a search result thang
-                //view.setSearchResultsList(searchResult);
+                client.objectOut(pidgey);
+                MessengerPigeon serverResponse = client.objectIn();
+                ArrayList<Customer> custArrayList = serverResponse.getCustomer();
+                Customer[] custArray = custArrayList.toArray(new Customer[custArrayList.size()]);
+                view.setSearchResultsList(custArray);
             } catch (NumberFormatException nfe) {
                 JOptionPane.showMessageDialog(null, "ID must be an integer!");
             }
+            
         }
     }
 

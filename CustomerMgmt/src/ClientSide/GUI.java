@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import Model.Customer;
 
 /**
  * View class primarily used for displaying information to the user.

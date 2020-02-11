@@ -1,10 +1,12 @@
-package ClientSide;
+package Model;
+
+import java.io.Serializable;
 
 /**
  * Represents a Customer with personal and contact information
  */
-public class Customer {
-
+public class Customer implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * Customer ID used as primary key [int]
      */
@@ -59,7 +61,7 @@ public class Customer {
     public int getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getLastName() { return lastName; }
-    public String getAddress() {return address; }
+    public String getAddress() { return address; }
     public String getPostalCode() { return postalCode; }
     public String getPhoneNumber() { return phoneNumber; }
     public char getCustomerType() { return clientType; }
