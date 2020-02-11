@@ -26,6 +26,7 @@ public class Controller implements Runnable {
     private ObjectInputStream objectIn;
     private ObjectOutputStream objectOut;
     private CustomerManager cManager;
+    private boolean live = true;
 
     public Controller(BufferedReader socketIn, PrintWriter socketOut, 
     ObjectInputStream objectIn, ObjectOutputStream objectOut){
@@ -40,7 +41,7 @@ public class Controller implements Runnable {
     public void run() {
         // cManager.dbSetup();
         MessengerPigeon clientResponse = null;
-        while (true) {
+        while (live) {
             System.out.println("Server Controller listening...");
             try {
                 clientResponse = (MessengerPigeon) objectIn.readObject();
@@ -55,16 +56,36 @@ public class Controller implements Runnable {
 
     private void switchBoard(MessengerPigeon clientResponse) {
         MessengerPigeon pidgey = new MessengerPigeon(null, null);
-        switch(clientResponse.getInstruction()){
-            case "1":
-                pidgey.setCustomer(callSearch(clientResponse));
-                break;
-        }
         try {
-            objectOut.writeObject(pidgey);
+            switch(clientResponse.getInstruction()){
+                case "1":
+                    pidgey.setCustomer(callSearch(clientResponse));
+                    objectOut.writeObject(pidgey);
+                    break;
+                case "2":
+                    callSave(clientResponse);
+                    break;
+                case "3":
+                    callAdd(clientResponse);
+                    break;
+                case "4":
+                    callDelete(clientResponse);
+                    break;
+                case "5":
+                    live = false;
+                    break;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void callAdd(MessengerPigeon clientResponse) {
+        cManager.addCustomer(clientResponse.getCustomer().get(0));
+    }
+
+    private void callSave(MessengerPigeon clientResponse) {
+        cManager.updateCustomer(clientResponse.getCustomer().get(0));
     }
 
     private ArrayList<Customer> callSearch(MessengerPigeon clientResponse) {
@@ -80,6 +101,10 @@ public class Controller implements Runnable {
             default:
                 return null;
         }
+    }
+
+    private void callDelete (MessengerPigeon clientResponse) {
+        cManager.removeCustomer(clientResponse.getCustomer().get(0).getId());
     }
 
     

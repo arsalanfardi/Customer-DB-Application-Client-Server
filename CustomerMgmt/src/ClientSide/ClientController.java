@@ -47,7 +47,8 @@ public class ClientController{
     class CloseWindow implements WindowListener {
         @Override
         public void windowClosing(WindowEvent e) {
-            //TODO: change everywhere it says model to send to server
+            MessengerPigeon pidgey = new MessengerPigeon(null, "5");
+            client.objectOut(pidgey); 
             //model.removeTable();
             e.getWindow().dispose();
         }
@@ -166,9 +167,10 @@ public class ClientController{
                 String phone = view.getCustomerPhoneField().getText();
                 char cType = view.getCustomerTypeCombo().getSelectedItem().toString().charAt(0);
                 if (validateAllInputs(fName, lName, address, phone, pCode)) {
-                    Customer CustomerToUpd = new Customer(CustomerID, fName, lName, address, pCode, phone, cType);
-                    //TODO: change everywhere it says model to send to server
-                    //model.updateCustomer(CustomerToUpd);
+                    ArrayList<Customer> customers = new ArrayList<Customer>();
+                    customers.add(new Customer(CustomerID, fName, lName, address, pCode, phone, cType));
+                    MessengerPigeon pidgey = new MessengerPigeon(customers, "2");
+                    client.objectOut(pidgey);
                     view.getSearchButton().doClick();
                 }
             } catch (NumberFormatException nfe) {
@@ -188,8 +190,10 @@ public class ClientController{
         public void actionPerformed(ActionEvent e) {
             try {
                 int CustomerID = Integer.parseInt(view.getCustomerIDField().getText());
-                //TODO: change everywhere it says model to send to server
-                //model.removeCustomer(CustomerID);
+                ArrayList<Customer> customers = new ArrayList<Customer>();
+                customers.add(new Customer(CustomerID, null, null, null, null, null, 'Z'));
+                MessengerPigeon pidgey = new MessengerPigeon(customers, "4");
+                client.objectOut(pidgey);
                 view.getSearchButton().doClick();
                 view.getCustomerIDField().setText(null);
                 view.getClearButton().doClick();
@@ -223,8 +227,6 @@ public class ClientController{
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
-                //TODO: change everywhere it says model to send to server
-                //int CustomerID = model.getStaticCustomerID();
                 String fName = view.getCustomerFNameField().getText();
                 String lName = view.getCustomerLNameField().getText();
                 String address = view.getCustomerAddressField().getText();
@@ -232,8 +234,10 @@ public class ClientController{
                 String phone = view.getCustomerPhoneField().getText();
                 char cType = view.getCustomerTypeCombo().getSelectedItem().toString().charAt(0);
                 if (validateAllInputs(fName, lName, address, phone, pCode)) {
-                    //Customer CustomerToAdd = new Customer(CustomerID, fName, lName, address, pCode, phone, cType);
-                    //model.addCustomer(CustomerToAdd);
+                    ArrayList<Customer> customers = new ArrayList<Customer>();
+                    customers.add(new Customer(-1, fName, lName, address, pCode, phone, cType));
+                    MessengerPigeon pidgey = new MessengerPigeon(customers, "3");
+                    client.objectOut(pidgey);
                     view.getSearchButton().doClick();
                 }
             } catch (NullPointerException npe) {

@@ -149,7 +149,7 @@ public class CustomerManager implements JDBCCredentials {
             Scanner sc = new Scanner(new FileReader(dataFile));
             while (sc.hasNext()) {
                 String[] CustomerInfo = sc.nextLine().split(";");
-                int id = CustomerID;
+                int id = -1;
                 String firstName = CustomerInfo[0];
                 String lastName = CustomerInfo[1];
                 String address = CustomerInfo[2];
@@ -169,11 +169,12 @@ public class CustomerManager implements JDBCCredentials {
      * @param Customer Customer object to be added to table
      */
     public void addCustomer (Customer Customer) {
+        updateStaticID();
         String sql = "INSERT INTO " + tableName +
                 " VALUES (?,?,?,?,?,?,?)";
         try{
             PreparedStatement pStat = jdbc_connection.prepareStatement(sql);
-            pStat.setInt(1, Customer.getId());
+            pStat.setInt(1, getStaticCustomerID());
             pStat.setString(2, Customer.getFirstName());
             pStat.setString(3, Customer.getLastName());
             pStat.setString(4, Customer.getAddress());
@@ -363,5 +364,30 @@ public class CustomerManager implements JDBCCredentials {
      */
     public int getStaticCustomerID () {
         return this.CustomerID;
+    }
+
+    public void updateStaticID () {
+        ArrayList<Customer> searchedCustomers = new ArrayList<>();
+        try {
+            String sql = "SELECT * FROM " + tableName;
+            statement = jdbc_connection.createStatement();
+            ResultSet Customer = statement.executeQuery(sql);
+            while (Customer.next()) {
+                int CustomerID = Customer.getInt("ID");
+                String fname = Customer.getString("FIRSTNAME");
+                String lname = Customer.getString("LASTNAME");
+                String address = Customer.getString("ADDRESS");
+                String postal = Customer.getString("POSTALCODE");
+                String phone = Customer.getString("PHONENUMBER");
+                char ctype = Customer.getString("CustomerTYPE").charAt(0);
+                Customer tempCustomer = new Customer(CustomerID, fname, lname, address, postal, phone, ctype);
+                searchedCustomers.add(tempCustomer);
+            }
+            Customer.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        // return searchedCustomers.toArray(new Customer[searchedCustomers.size()]);
+        CustomerID = searchedCustomers.size() + 1;
     }
 }
