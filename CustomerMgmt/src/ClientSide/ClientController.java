@@ -10,6 +10,12 @@ import java.util.regex.Pattern;
 import Model.MessengerPigeon;
 import Model.Customer;
 
+/**
+ * The Controller for the Client Side which communicates with the Client and GUI.
+ * 
+ * Contains all Action Listeners for the GUI.
+ * 
+ */
 public class ClientController{
 
     private GUI view;
@@ -41,46 +47,16 @@ public class ClientController{
     }
 
 
-        /**
-     * Class that implements WindowListener and removes table on close
+    /**
+     * Class that extends WindowAdapter and removes table on close.
      */
-    class CloseWindow implements WindowListener {
+    class CloseWindow extends WindowAdapter {
         @Override
         public void windowClosing(WindowEvent e) {
             MessengerPigeon pidgey = new MessengerPigeon(null, "5");
             client.objectOut(pidgey); 
             //model.removeTable();
             e.getWindow().dispose();
-        }
-
-        @Override
-        public void windowClosed(WindowEvent e) {
-
-        }
-
-        @Override
-        public void windowIconified(WindowEvent e) {
-
-        }
-
-        @Override
-        public void windowDeiconified(WindowEvent e) {
-
-        }
-
-        @Override
-        public void windowActivated(WindowEvent e) {
-
-        }
-
-        @Override
-        public void windowDeactivated(WindowEvent e) {
-
-        }
-
-        @Override
-        public void windowOpened(WindowEvent e) {
-
         }
     }
 
@@ -109,15 +85,14 @@ public class ClientController{
                     pidgey.setSearchFields("all", searchParameter);
                 }
                 client.objectOut(pidgey);
-                MessengerPigeon serverResponse = client.objectIn();
-                ArrayList<Customer> custArrayList = serverResponse.getCustomer();
-                Customer[] custArray = custArrayList.toArray(new Customer[custArrayList.size()]);
-                view.setSearchResultsList(custArray);
+                updateSearchResult(client.objectIn());
             } catch (NumberFormatException nfe) {
                 JOptionPane.showMessageDialog(null, "ID must be an integer!");
             }
             
         }
+
+        
     }
 
     /**
@@ -246,6 +221,11 @@ public class ClientController{
         }
     }
 
+    private void updateSearchResult(MessengerPigeon serverResponse) {
+        ArrayList<Customer> custArrayList = serverResponse.getCustomer();
+        Customer[] custArray = custArrayList.toArray(new Customer[custArrayList.size()]);
+        view.setSearchResultsList(custArray);
+    }
 /// HELPER METHODS TO VALIDATE INPUTS
 
     /**

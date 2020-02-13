@@ -4,8 +4,15 @@ import java.io.Serializable;
 
 /**
  * Represents a Customer with personal and contact information
+ * 
+ * Implements Serializable to allow for sending between Client/Server.
+ * 
+ * @author Arsalan Fardi and Mihai Robu
+ * @version 1
+ * @since February 13, 2020
  */
 public class Customer implements Serializable {
+    /** serialVersion ID to ensure proper serialization */
     private static final long serialVersionUID = 1L;
     /**
      * Customer ID used as primary key [int]
