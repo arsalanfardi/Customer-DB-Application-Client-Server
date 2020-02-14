@@ -9,8 +9,11 @@ import java.util.Scanner;
 import Model.Customer;
 
 /**
- * Model class used for business logic and primarily
- * to communicated with database
+ * Model class used for business logic and primarily to communicated with database.
+ * 
+ * @author Arsalan Fardi and Mihai Robu
+ * @version 1
+ * @since February 13, 2020
  */
 public class CustomerManager implements JDBCCredentials {
 
@@ -360,12 +363,15 @@ public class CustomerManager implements JDBCCredentials {
 
     /**
      * Gets the CustomerID static variable
-     * @return
+     * @return integer representing the counter of customer ID's
      */
     public int getStaticCustomerID () {
         return this.CustomerID;
     }
 
+    /**
+     * Updates the counter to reflect the number of customers in the database + 1
+     */
     public void updateStaticID () {
         ArrayList<Customer> searchedCustomers = new ArrayList<>();
         try {

@@ -1,45 +1,40 @@
 package ServerSide;
 
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.event.*;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import Model.MessengerPigeon;
 import Model.Customer;
 
 /**
- * Controller class used to link the View (GUI class) to the Model
- * (CustomerManager Class).
+ * Controller class used to link to the Database and communicate to Client
+ * @author Arsalan Fardi and Mihai Robu
+ * @version 1
+ * @since February 13, 2020
  */
 public class Controller implements Runnable {
 
-    private BufferedReader socketIn;
-    private PrintWriter socketOut;
+    /** Input stream from the instance of Client */
     private ObjectInputStream objectIn;
+    /** Output stream for the instance of Client */
     private ObjectOutputStream objectOut;
+    /** CustomerManager which connects to database */
     private CustomerManager cManager;
+    /** Boolean condition the while loop in the run method */
     private boolean live = true;
 
-    public Controller(BufferedReader socketIn, PrintWriter socketOut, 
-    ObjectInputStream objectIn, ObjectOutputStream objectOut){
+    public Controller(ObjectInputStream objectIn, ObjectOutputStream objectOut){
         this.objectOut = objectOut;
         this.objectIn = objectIn;
-        this.socketIn = socketIn;
-        this.socketOut = socketOut;
         this.cManager = new CustomerManager();
     }
 
+    /**
+     * Method to constantly listen for a response from the Client.
+     */
     @Override
     public void run() {
-        // cManager.dbSetup();
         MessengerPigeon clientResponse = null;
         while (live) {
             System.out.println("Server Controller listening...");
@@ -52,8 +47,21 @@ public class Controller implements Runnable {
             }
             switchBoard(clientResponse);
         }
+        try {
+            objectIn.close();
+            objectOut.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+    /**
+     * Switch statement for listening to instruction from the client response.
+     * 
+     * Redirects to appropriate method.
+     * 
+     * @param clientResponse the MessengerPigeon from the client
+     */
     private void switchBoard(MessengerPigeon clientResponse) {
         MessengerPigeon pidgey = new MessengerPigeon(null, null);
         try {
@@ -80,14 +88,30 @@ public class Controller implements Runnable {
         }
     }
 
+    /**
+     * Adding a new customer to the database.
+     * 
+     * @param clientResponse
+     */
     private void callAdd(MessengerPigeon clientResponse) {
         cManager.addCustomer(clientResponse.getCustomer().get(0));
     }
 
+    /**
+     * Updating a customer in the database.
+     * 
+     * @param clientResponse
+     */
     private void callSave(MessengerPigeon clientResponse) {
         cManager.updateCustomer(clientResponse.getCustomer().get(0));
     }
 
+    /**
+     * Searching the database with type and parameter as specified by the Client.
+     * 
+     * @param clientResponse
+     * @return an ArrayList with search results
+     */
     private ArrayList<Customer> callSearch(MessengerPigeon clientResponse) {
         switch(clientResponse.getSearchType()){
             case "ID":
@@ -103,6 +127,10 @@ public class Controller implements Runnable {
         }
     }
 
+    /**
+     * Deleting a customer from the database.
+     * @param clientResponse
+     */
     private void callDelete (MessengerPigeon clientResponse) {
         cManager.removeCustomer(clientResponse.getCustomer().get(0).getId());
     }

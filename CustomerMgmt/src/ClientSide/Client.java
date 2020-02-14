@@ -10,20 +10,30 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import Model.MessengerPigeon;
 
+/**
+ * Client class for connecting and communicating with Server.
+ * 
+ * @author Arsalan Fardi and Mihai Robu
+ * @version 1
+ * @since February 13, 2020
+ * 
+ */
 public class Client {
+    /** Socket for connecting to Server */
     private Socket aSocket;
-    private BufferedReader socketIn;
-    private PrintWriter socketOut;
     private ObjectInputStream objectIn;
     private ObjectOutputStream objectOut;
 
+    /**
+     * Constructor for Client that connects using server name and port number
+     * @param serverName Name of the server to connect to
+     * @param portNumber Port number to connect to
+     */
     public Client(String serverName, int portNumber) {
         try {
             aSocket = new Socket(serverName, portNumber);
             objectOut = new ObjectOutputStream(aSocket.getOutputStream());
             objectIn = new ObjectInputStream(aSocket.getInputStream());
-            socketIn = new BufferedReader(new InputStreamReader(aSocket.getInputStream()));
-            socketOut = new PrintWriter(aSocket.getOutputStream(), true);
             System.out.println("Client connected");
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -33,6 +43,10 @@ public class Client {
 
     }
 
+    /**
+     * Method to send MessengerPigeon object to server
+     * @param pidgey MessengerPigeon object
+     */
     public void objectOut(MessengerPigeon pidgey) {
         try {
             objectOut.writeObject(pidgey);
@@ -41,6 +55,10 @@ public class Client {
         }
     }
 
+    /**
+     * Method to read MessengerPigeon object from server
+     * @return MessengerPigeon object
+     */
     public MessengerPigeon objectIn() {
         MessengerPigeon pidgey = null;
         try {
@@ -51,16 +69,5 @@ public class Client {
             e.printStackTrace();
         }
         return pidgey;
-    }
-    public void out(String s){
-        socketOut.println(s);
-    }
-
-    public void in() {
-        try {
-            System.out.println(socketIn.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

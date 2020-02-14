@@ -36,8 +36,9 @@ public class MessengerPigeon implements Serializable {
 
     
     /** 
+     * Returns the search parameter
      * 
-     * @return String
+     * @return String representing the search parameter
      */
     public String getSearchParameter(){
         return searchParameter;

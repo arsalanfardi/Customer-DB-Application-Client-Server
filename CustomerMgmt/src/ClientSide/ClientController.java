@@ -15,6 +15,10 @@ import Model.Customer;
  * 
  * Contains all Action Listeners for the GUI.
  * 
+ * @author Arsalan Fardi and Mihai Robu
+ * @version 1
+ * @since February 13, 2020
+ * 
  */
 public class ClientController{
 
@@ -221,6 +225,10 @@ public class ClientController{
         }
     }
 
+    /**
+     * Helper method that updates the search result list based on the list of customers returned from the server
+     * @param serverResponse MessengerPigeon object carrying ArrayList of Customer objects
+     */
     private void updateSearchResult(MessengerPigeon serverResponse) {
         ArrayList<Customer> custArrayList = serverResponse.getCustomer();
         Customer[] custArray = custArrayList.toArray(new Customer[custArrayList.size()]);

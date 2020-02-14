@@ -8,6 +8,10 @@ import Model.Customer;
 
 /**
  * View class primarily used for displaying information to the user.
+ * 
+ * @author Arsalan Fardi and Mihai Robu
+ * @version 1
+ * @since February 13, 2020
  */
 public class GUI extends JFrame {
 
